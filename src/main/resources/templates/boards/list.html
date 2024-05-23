@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Board</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<h1>Board List</h1>
+<table th:if="${!boards.empty}">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Title</th>
+        <th>Created At</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="board : ${boards}">
+        <td th:text="${board.id}"></td>
+        <td th:text="${board.name}"></td>
+        <td>
+           <!-- <a th:href="@{/view/{id}(id=${board.id})}" th:text="${board.title}"> </a> -->
+            <a th:href="@{'/view?id=' + ${board.id}}" th:text="${board.title}"></a>
+        </td>
+        <!--   <td th:text="${board.createdAt}"></td>-->
+          <td th:text="${#temporals.format(board.createdAt, 'yyyy/MM/dd')}"></td>
+       </tr>
+       </tbody>
+</table>
+<div class="center">
+    <div th:if="${boards.totalPages > 1 }">
+        <ul>
+            <li th:each="i:${#numbers.sequence(1, boards.totalPages)}">
+                <a th:href="@{/list(page=${i})}" th:text="${i}"> </a>
+            </li>
+        </ul>
+    </div>
+</div>
+<div class="center">
+    <a th:href="@{/writeform}" class="link">글쓰기</a>
+</div>
+<div class="center"
+     th:include="common/footer :: footer">footer
+</div>
+</body>
+</html>

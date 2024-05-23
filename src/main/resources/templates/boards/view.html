@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>상세 조회</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <h2 th:text="${board.title}">Board Title</h2>
+    <table class="board-table">
+        <tr>
+            <th>Name</th>
+            <td th:text="${board.name}">name</td>
+        </tr>
+        <tr>
+            <th>Content</th>
+            <td th:text="${board.content}">content</td>
+        </tr>
+        <tr>
+            <th>Created At</th>
+            <td th:text="${#temporals.format(board.createdAt, 'yyyy/MM/dd HH:mm')}">Created At</td>
+        </tr>
+    </table>
+    <div class="center">
+        <a th:href="@{/list}" class="link">List</a>
+        <a th:href="@{'/updateform?id=' + ${board.id}}" class="link">Edit</a>
+      <!--  <a th:href="@{/updateform/{id}(id=${board.id})}" class="link">Edit</a> -->
+        <!--   <a th:href="@{'/deleteform?id=' + ${board.id}}" class="link">Delete</a>
+        <a th:href="@{/deleteform/{id}(id=${board.id})}" class="link">Delete</a>-->
+        <a th:href="@{/deleteform(id=${board.id})}" class="link" onclick="return confirm('삭제하실건가요?')">Delete</a>
+    </div>
+    <div class="center" th:include="common/footer :: footer">footer</div>
+</body>
+</html>
