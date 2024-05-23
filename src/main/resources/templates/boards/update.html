@@ -7,7 +7,7 @@
 </head>
 <body>
 <h1>Update Board</h1>
-    <form th:action="@{/updateform}" th:object="${board}" method="post">
+    <form th:action="@{/updateform/{id}(id=${board.id})}" th:object="${board}" method="post">
         <label for="name">Name</label>
         <input type="text" id="name" th:field="*{name}" placeholder="Enter Name" required />
 
@@ -18,10 +18,9 @@
         <input type="text" id="content" th:field="*{content}" placeholder="Enter Content" required />
 
         <label for="password">Password</label>
-        <input type="password" id="password" th:field="*{password}" required />
+        <input type="password" id="password" name="password" placeholder="Enter Password" required />
 
         <input type="submit" value="Update">
-
     </form>
 </body>
 </html>
