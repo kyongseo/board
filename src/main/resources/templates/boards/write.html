@@ -7,7 +7,7 @@
 </head>
 <body>
 <h1>Create a New Board</h1>
-    <form th:action="@{/writeform}" th:object="${board}" method="post">
+    <form th:action="@{/write}" th:object="${board}" method="post">
         <label for="name">Name</label>
         <input type="text" id="name" th:field="*{name}" placeholder="Enter Name" required />
 

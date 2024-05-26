@@ -23,11 +23,8 @@
     </table>
     <div class="center">
         <a th:href="@{/list}" class="link">List</a>
-        <!--  <a th:href="@{'/updateform?id=' + ${board.id}}" class="link">Edit</a>-->
-        <a th:href="@{/updateform/{id}(id=${board.id})}" class="link">Edit</a>
-        <!--   <a th:href="@{'/deleteform?id=' + ${board.id}}" class="link">Delete</a>
-        <a th:href="@{/deleteform/{id}(id=${board.id})}" class="link">Delete</a>-->
-        <a th:href="@{/deleteform/{id}(id=${board.id})}" class="link" onclick="return confirm('삭제하실건가요?')">Delete</a>
+        <a th:href="@{/update/{id}(id=${board.id})}" class="link">Edit</a>
+        <a th:href="@{/delete/{id}(id=${board.id})}" class="link" onclick="return confirm('삭제하실건가요?')">Delete</a>
     </div>
     <div class="center" th:include="common/footer :: footer">footer</div>
 </body>

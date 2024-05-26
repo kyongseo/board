@@ -7,7 +7,7 @@
 </head>
 <body>
 <h1>Update Board</h1>
-    <form th:action="@{/updateform/{id}(id=${board.id})}" th:object="${board}" method="post">
+    <form th:action="@{/update/{id}(id=${board.id})}" th:object="${board}" method="post">
         <input type="hidden" th:field="*{id}">
             <label for="name">Name</label>
             <input type="text" id="name" th:field="*{name}" placeholder="Enter Name" required />

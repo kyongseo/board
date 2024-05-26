@@ -54,13 +54,13 @@ public class BoardController {
     /**
      * 게시글 등록 폼
      */
-    @GetMapping("/writeform")
+    @GetMapping("/write")
     public String writeBoard(Model model) {
         model.addAttribute("board", new Board());
         return "boards/write";
     }
 
-    @PostMapping("/writeform")
+    @PostMapping("/write")
     public String writeBoard(@ModelAttribute("board") Board board, RedirectAttributes redirectAttributes) {
         board.setCreatedAt(LocalDateTime.now());
         boardService.saveBoard(board);
@@ -72,13 +72,13 @@ public class BoardController {
     /**
      * 게시글 삭제 폼
      */
-    @GetMapping("/deleteform/{id}")
+    @GetMapping("/delete/{id}")
     public String deleteForm(@PathVariable Long id, Model model) {
         model.addAttribute("board", boardService.findBoardById(id));
         return "boards/delete";
     }
 
-    @PostMapping("/deleteform/{id}")
+    @PostMapping("/delete/{id}")
     public String deleteForm(@PathVariable Long id,
                              @RequestParam String password,
                              @ModelAttribute Board board,
@@ -97,7 +97,7 @@ public class BoardController {
     /**
      * 게시글 수정 폼
      */
-    @GetMapping("/updateform/{id}")
+    @GetMapping("/update/{id}")
     public String updateForm(@PathVariable Long id, Model model) {
         Board board = boardService.findBoardById(id);
 
@@ -105,7 +105,7 @@ public class BoardController {
         return "boards/update";
     }
 
-    @PostMapping("/updateform/{id}")
+    @PostMapping("/update/{id}")
     public String editBoard(@ModelAttribute Board board,
                             @PathVariable Long id,
                             @RequestParam String password,
