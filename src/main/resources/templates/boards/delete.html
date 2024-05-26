@@ -7,9 +7,11 @@
 </head>
 <body>
 <h1>Delete Board</h1>
-<form th:action="@{'/deleteform/' + ${board.id}}" method="post">
+<form th:action="@{/deleteform/{id}(id=${board.id})}" method="post" th:object="${board}">
+    <input type="hidden" name="id" th:value="${id}">
     <label for="password">Password</label>
     <input type="password" id="password" name="password" placeholder="Enter Password" required>
+    <span th:if="${msg}" th:text="${msg}"></span>
     <input type="submit" value="확인">
 </form>
 </body>

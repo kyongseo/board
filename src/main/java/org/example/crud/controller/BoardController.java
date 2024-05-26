@@ -43,13 +43,6 @@ public class BoardController {
      * 게시글 상세 조회 페이지
      * /localhost/view?id=13&page=1 같은 형식일려면 @RequestParam 사용
      */
-//    @GetMapping("/view/{id}")
-//    public String view(@PathVariable Long id, Model model) {
-//        Board board = boardService.findBoardById(id);
-//        model.addAttribute("board", board);
-//
-//        return "boards/view";
-//    }
     @GetMapping("/view/{id}")
     public String view(@PathVariable Long id, Model model) {
         Board board = boardService.findBoardById(id);
@@ -78,96 +71,60 @@ public class BoardController {
 
     /**
      * 게시글 삭제 폼
-     * , @RequestParam String password
      */
-//    @GetMapping("/deleteform/{id}")
-//    public String deleteForm(@PathVariable Long id) {
-//        boardService.deleteBoardById(id);
-//        return "boards/delete";
-//    }
     @GetMapping("/deleteform/{id}")
     public String deleteForm(@PathVariable Long id, Model model) {
-        model.addAttribute("board", new Board());
+        model.addAttribute("board", boardService.findBoardById(id));
         return "boards/delete";
     }
 
-//    @PostMapping("/deleteform/{id}")
-//    public String deleteForm(@PathVariable Long id, @ModelAttribute("board") Board board, @RequestParam String password) {
-//        Board existingBoard = boardService.findBoardById(id);
-//        if (existingBoard != null && existingBoard.getPassword().equals(password)) {
-//            boardService.deleteBoardById(id);
-//            return "redirect:/list";
-//        } else {
-//            // 비밀번호가 일치하지 않을 경우 처리
-//            return "redirect:/list"; // 혹은 다른 처리 방법을 선택할 수 있습니다.
-//        }
-//    }
-
     @PostMapping("/deleteform/{id}")
-    public String deleteForm(@PathVariable Long id, @RequestParam String password) {
-        Board existingBoard = boardService.findBoardById(id);
-        if (existingBoard != null && existingBoard.getPassword().equals(password)) {
+    public String deleteForm(@PathVariable Long id,
+                             @RequestParam String password,
+                             @ModelAttribute Board board,
+                             RedirectAttributes redirectAttributes) {
+        Board deleteBoard = boardService.findBoardById(id);
+        if (deleteBoard.getPassword().equals(password)) {
             boardService.deleteBoardById(id);
+            redirectAttributes.addFlashAttribute("msg", "삭제 성공");
             return "redirect:/list";
         } else {
-            // 비밀번호가 일치하지 않을 경우 처리
-            return "redirect:/list"; // 혹은 다른 처리 방법을 선택할 수 있습니다.
+            redirectAttributes.addFlashAttribute("msg", "삭제 실패");
+            return "redirect:/delete";
         }
     }
-
 
     /**
      * 게시글 수정 폼
      */
-//    @GetMapping("/updateform/{id}")
-//    public String updateForm(@PathVariable Long id, Model model, @RequestParam String password) {
-//        Board board = boardService.findBoardById(id);
-//        if (board != null && board.getPassword().equals(password)) {
-//            model.addAttribute("board", board);
-//            return "boards/update";
-//        }else {
-//            return "redirect:/list";
-//        }
-//    }
-
     @GetMapping("/updateform/{id}")
     public String updateForm(@PathVariable Long id, Model model) {
         Board board = boardService.findBoardById(id);
 
-        model.addAttribute("board", board);
+        model.addAttribute("board", boardService.findBoardById(id));
         return "boards/update";
     }
 
-//    @PostMapping("/updateform")
-//    public String editBoard(@ModelAttribute("board") Board board) {
-//        boardService.saveBoard(board);
-//
-//        return "redirect:/list";
-//    }
-
-//    @PostMapping("/updateform/{id}")
-//    public String editBoard(@ModelAttribute("board") Board board, @RequestParam String password) {
-//        Board existingBoard = boardService.findBoardById(board.getId());
-//        if (existingBoard != null && existingBoard.getPassword().equals(password)) {
-//            existingBoard.setName(board.getName());
-//            existingBoard.setTitle(board.getTitle());
-//            existingBoard.setContent(board.getContent());
-//            // 다른 필드도 필요에 따라 업데이트
-//
-//            boardService.saveBoard(existingBoard);
-//        }
-//        return "redirect:/list";
-//    }
-
     @PostMapping("/updateform/{id}")
-    public String editBoard(@ModelAttribute("board") Board board) {
-        Board existingBoard = boardService.findBoardById(board.getId());
-            existingBoard.setName(board.getName());
-            existingBoard.setTitle(board.getTitle());
-            existingBoard.setContent(board.getContent());
-            existingBoard.setCreatedAt(LocalDateTime.now());
+    public String editBoard(@ModelAttribute Board board,
+                            @PathVariable Long id,
+                            @RequestParam String password,
+                            RedirectAttributes redirectAttributes) {
+        Board updateBoard = boardService.findBoardById(id);
 
-            boardService.saveBoard(existingBoard);
-        return "redirect:/list";
+        if (updateBoard.getPassword().equals(password)){
+            updateBoard.setName(board.getName());
+            updateBoard.setTitle(board.getTitle());
+            updateBoard.setContent(board.getContent());
+            updateBoard.setCreatedAt(LocalDateTime.now());
+            boardService.saveBoard(updateBoard);
+
+            redirectAttributes.addFlashAttribute("msg", "수정성공");
+
+            return "redirect:/list";
+        }else {
+            redirectAttributes.addFlashAttribute("msg", "수정 실패");
+            return "redirect:/update/" + id;
+        }
     }
 }
