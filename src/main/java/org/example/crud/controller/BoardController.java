@@ -41,7 +41,6 @@ public class BoardController {
 
     /**
      * 게시글 상세 조회 페이지
-     * /localhost/view?id=13&page=1 같은 형식일려면 @RequestParam 사용
      */
     @GetMapping("/view/{id}")
     public String view(@PathVariable Long id, Model model) {
@@ -82,17 +81,36 @@ public class BoardController {
     public String deleteForm(@PathVariable Long id,
                              @RequestParam String password,
                              @ModelAttribute Board board,
-                             RedirectAttributes redirectAttributes) {
+                             Model model) {
         Board deleteBoard = boardService.findBoardById(id);
         if (deleteBoard.getPassword().equals(password)) {
             boardService.deleteBoardById(id);
-            redirectAttributes.addFlashAttribute("msg", "삭제 성공");
             return "redirect:/list";
         } else {
-            redirectAttributes.addFlashAttribute("msg", "삭제 실패");
-            return "redirect:/delete";
+            model.addAttribute("id", board.getId());
+            model.addAttribute("msg", "비밀번호가 일치하지 않습니다.");
+            model.addAttribute("post", board); // post 객체도 모델에 추가
+            return "boards/delete";
         }
     }
+
+//    @PostMapping("/delete")
+//    public String delete(@RequestParam(name="id") Long id,
+//                         @RequestParam(name="password") String password,
+//                         RedirectAttributes redirectAttributes) {
+//        // @RequestParam으로 deleteform에서 hidden으로 name="id" 넘긴거 받아와서 id 변수에 주입,
+//        // password도 name="password"로 받아와서 변수에 주입
+//
+//        if (boardService.findBoardById(id, password)) {
+//            // password 확인 결과 true여야 삭제
+//            boardService.deleteBoardById(id);
+//            redirectAttributes.addFlashAttribute("message", "게시글이 정상적으로 삭제되었습니다.");
+//            return "redirect:/list";
+//        } else {    // password 불일치 시 삭제 폼으로 redirect
+//            redirectAttributes.addFlashAttribute("message", "비밀번호가 일치하지 않습니다.");
+//            return "redirect:/deleteform?id=" + id;
+//        }
+//    }
 
     /**
      * 게시글 수정 폼
@@ -101,7 +119,7 @@ public class BoardController {
     public String updateForm(@PathVariable Long id, Model model) {
         Board board = boardService.findBoardById(id);
 
-        model.addAttribute("board", boardService.findBoardById(id));
+        model.addAttribute("board", board);
         return "boards/update";
     }
 
@@ -109,7 +127,7 @@ public class BoardController {
     public String editBoard(@ModelAttribute Board board,
                             @PathVariable Long id,
                             @RequestParam String password,
-                            RedirectAttributes redirectAttributes) {
+                            Model model) {
         Board updateBoard = boardService.findBoardById(id);
 
         if (updateBoard.getPassword().equals(password)){
@@ -118,13 +136,12 @@ public class BoardController {
             updateBoard.setContent(board.getContent());
             updateBoard.setCreatedAt(LocalDateTime.now());
             boardService.saveBoard(updateBoard);
-
-            redirectAttributes.addFlashAttribute("msg", "수정성공");
-
             return "redirect:/list";
         }else {
-            redirectAttributes.addFlashAttribute("msg", "수정 실패");
-            return "redirect:/update/" + id;
+            model.addAttribute("id", board.getId());
+            model.addAttribute("msg", "비밀번호가 일치하지 않습니다.");
+            model.addAttribute("post", board); // post 객체도 모델에 추가
+            return "boards/update";
         }
     }
 }
